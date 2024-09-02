@@ -1,6 +1,8 @@
 import Constants from 'expo-constants';
 import RepositoryList from './RepositoryList';
 import { Text, StyleSheet, View, Pressable } from 'react-native';
+import { Route, Routes, Navigate } from 'react-router-native';
+import SignIn from './SignIn';
 import AppBar from './AppBar';
 
 const styles = StyleSheet.create({
@@ -18,7 +20,11 @@ const Main = () => {
       <Pressable onPress={() => console.log('AppBar pressed')}>
       <AppBar />
       </Pressable>
-        <RepositoryList />
+      <Routes>
+        <Route path="/" element={<RepositoryList />} />
+        <Route path="/signin" element={<SignIn />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </View>
   );
 };
