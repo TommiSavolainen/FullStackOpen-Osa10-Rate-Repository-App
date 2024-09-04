@@ -52,7 +52,6 @@ const formatNumber = (num) => {
 };
 
 const RepositoryItem = (props) => {
-    console.log(props);
     if (!props) {
         return null;
     }
