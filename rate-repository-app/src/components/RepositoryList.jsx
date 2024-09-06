@@ -10,6 +10,7 @@ const RepositoryList = () => {
     ? repositories.edges.map(edge => edge.node)
     : [];
 
+    // console.log(repositories);
   return (
     <View>
     <FlatList

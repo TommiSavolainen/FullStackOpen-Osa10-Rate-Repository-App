@@ -2,6 +2,8 @@ import Text from './Text';
 import { TextInput, Pressable, View, StyleSheet } from 'react-native';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
+import useSignIn from '../hooks/useSignIn';
+import AuthStorage from '../utils/authStorage';
 
 const initialValues = {
     username: '',
@@ -49,12 +51,36 @@ const styles = StyleSheet.create({
 });
 
 const SignIn = () => {
+    const [signIn] = useSignIn();
+
+    const onSubmit = async (values) => {
+        const { username, password } = values;
+    
+        // console.log('Submitting with values:', values); // Debugging statement
+    
+        try {
+            const result = await signIn({ username, password });
+            // console.log('SignIn response result:', result); // Debugging statement
+    
+            // Log the entire result object to understand its structure
+            // console.log('Full result object:', JSON.stringify(result, null, 2));
+    
+            if (result && result.authenticate) {
+                const authStorage = new AuthStorage();
+                authStorage.setAccessToken(result.authenticate.accessToken);
+                // console.log('Access Token:', result.authenticate.accessToken); // Debugging statement
+            } else {
+                console.log('No access token received');
+            }
+        } catch (e) {
+            console.log('SignIn error:', e); // Debugging statement
+        }
+    };
+
     const { handleChange, handleSubmit, values, errors, touched } = useFormik({
         initialValues,
         validationSchema,
-        onSubmit: values => {
-            console.log(values);
-        },
+        onSubmit: onSubmit,
     });
 
     return (
