@@ -4,6 +4,7 @@ import { useFormik } from 'formik';
 import * as yup from 'yup';
 import useSignIn from '../hooks/useSignIn';
 import AuthStorage from '../utils/authStorage';
+import { useNavigate } from 'react-router-native';
 
 const initialValues = {
     username: '',
@@ -52,6 +53,7 @@ const styles = StyleSheet.create({
 
 const SignIn = () => {
     const [signIn] = useSignIn();
+    const navigation = useNavigate();
 
     const onSubmit = async (values) => {
         const { username, password } = values;
@@ -66,8 +68,10 @@ const SignIn = () => {
             // console.log('Full result object:', JSON.stringify(result, null, 2));
     
             if (result && result.authenticate) {
-                const authStorage = new AuthStorage();
-                authStorage.setAccessToken(result.authenticate.accessToken);
+                navigation('/'); // Navigate to the home page
+                
+                // const authStorage = new AuthStorage();
+                // authStorage.setAccessToken(result.authenticate.accessToken);
                 // console.log('Access Token:', result.authenticate.accessToken); // Debugging statement
             } else {
                 console.log('No access token received');

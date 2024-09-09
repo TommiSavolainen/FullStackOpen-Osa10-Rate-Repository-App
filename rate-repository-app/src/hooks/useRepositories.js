@@ -33,9 +33,11 @@ const useRepositories = () => {
         fetchPolicy: 'cache-and-network',
     });
 
-    if (error) {
-        console.error('Error fetching repositories:', error);
-    }
+    useEffect(() => {
+        if (error) {
+            console.error('Error fetching repositories:', error);
+        }
+    }, [error]);
 
     const repositories = data ? data.repositories : undefined;
 
