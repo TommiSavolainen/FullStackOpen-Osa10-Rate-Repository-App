@@ -1,5 +1,7 @@
-import { View, Image, StyleSheet } from 'react-native';
+// RepositoryItem.jsx
+import { View, Image, StyleSheet, Button } from 'react-native';
 import Text from './Text';
+import * as Linking from 'expo-linking';
 
 const styles = StyleSheet.create({
     container: {
@@ -51,16 +53,17 @@ const formatNumber = (num) => {
     return num.toString();
 };
 
-const RepositoryItem = (props) => {
+const RepositoryItem = ({ showGitHubButton, ...props }) => {
     if (!props) {
         return null;
     }
     return (
-        <View style={styles.container}>
-            <View style={styles.header}>
+        <View style={styles.container} role='none'>
+            <View style={styles.header} role='none'>
                 <Image
                     style={styles.image}
                     source={{ uri: props.ownerAvatarUrl }}
+                    role="img"
                 />
                 <View style={styles.textContainer}>
                     <Text fontWeight="bold">{props.fullName}</Text>
@@ -86,6 +89,12 @@ const RepositoryItem = (props) => {
                     <Text color="textSecondary">Rating</Text>
                 </View>
             </View>
+            {showGitHubButton && (
+                <Button
+                    title="Open in GitHub"
+                    onPress={() => Linking.openURL(props.url)}
+                />
+            )}
         </View>
     );
 };

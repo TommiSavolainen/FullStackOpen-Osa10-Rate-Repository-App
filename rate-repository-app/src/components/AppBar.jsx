@@ -30,12 +30,12 @@ const AppBar = () => {
     await apolloClient.resetStore();
     navigate('/');
   };
-console.log(data);
+// console.log(data);
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
         <Pressable>
-          <Link to="/">
+          <Link to="/" role="link">
             <Text style={styles.tab} color="textWhite" fontSize="subheading" fontWeight="bold">Repositories</Text>
           </Link>
         </Pressable>
@@ -45,7 +45,7 @@ console.log(data);
           </Pressable>
         ) : (
           <Pressable>
-            <Link to="/signin">
+            <Link to="/signin" role="link">
               <Text style={styles.tab} color="textWhite" fontSize="subheading" fontWeight="bold">Sign in</Text>
             </Link>
           </Pressable>
