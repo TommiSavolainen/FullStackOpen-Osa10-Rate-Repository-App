@@ -2,6 +2,8 @@ import React from 'react';
 import { Formik, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { TextInput, Button, View, Text, StyleSheet, Alert } from 'react-native';
+import { useMutation } from '@apollo/client';
+import { CREATE_REVIEW } from '../graphql/queries';
 
 const validationSchema = Yup.object().shape({
     ownerName: Yup.string().required('Repository owner\'s username is required'),
@@ -10,7 +12,7 @@ const validationSchema = Yup.object().shape({
         .required('Rating is required')
         .min(0, 'Rating must be between 0 and 100')
         .max(100, 'Rating must be between 0 and 100'),
-    review: Yup.string(),
+    text: Yup.string(),
 });
 
 const styles = StyleSheet.create({
@@ -52,39 +54,36 @@ const CustomTextInput = ({ field, form, ...props }) => {
 };
 
 const ReviewForm = ({ onSubmit }) => {
-    const handleSubmit = async (values) => {
-        const { ownerName, repositoryName, rating, review } = values;
+    const [mutate] = useMutation(CREATE_REVIEW);
+
+    const handleSubmit = async (values, { setSubmitting }) => {
+        const { ownerName, repositoryName, rating, text } = values;
+        const ratingNumber = Number(rating);
+        const variables = { review: { ownerName, repositoryName, rating: ratingNumber, text } };
+        console.log('Submitting review with variables:', variables);
         try {
-            const response = await fetch('http://localhost:5000/api/repositories', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    ownerName, 
-                    repositoryName, 
-                    rating: Number(rating), 
-                    review 
-                }),
-            });
-            if (!response.ok) {
-                throw new Error('Failed to submit review');
-            }
-            const data = await response.json();
+            const { data } = await mutate({ variables });
+            console.log('Server response:', data);
             Alert.alert('Review submitted successfully');
             onSubmit(data);
         } catch (error) {
-            console.error(error);
+            console.error('Error submitting review:', error);
+            if (error.networkError && error.networkError.result && error.networkError.result.errors) {
+                console.error('Server errors:', error.networkError.result.errors);
+            }
             Alert.alert('Failed to submit review');
+        } finally {
+            setSubmitting(false);
         }
     };
+
     return (
         <Formik
-            initialValues={{ ownerName: '', repositoryName: '', rating: '', review: '' }}
+            initialValues={{ ownerName: '', repositoryName: '', rating: '', text: '' }}
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
         >
-            {({ handleSubmit }) => (
+            {({ submitForm, isSubmitting }) => (
                 <View style={styles.container}>
                     <View>
                         <Text>Owner's Username</Text>
@@ -103,10 +102,10 @@ const ReviewForm = ({ onSubmit }) => {
                     </View>
                     <View>
                         <Text>Review</Text>
-                        <Field name="review" component={CustomTextInput} multiline />
-                        <ErrorMessage name="review" component={Text} style={styles.errorText} />
+                        <Field name="text" component={CustomTextInput} multiline />
+                        <ErrorMessage name="text" component={Text} style={styles.errorText} />
                     </View>
-                    <Button onPress={handleSubmit} title="Submit" color={styles.button.backgroundColor} />
+                    <Button onPress={submitForm} title="Submit" color={styles.button.backgroundColor} disabled={isSubmitting} />
                 </View>
             )}
         </Formik>
