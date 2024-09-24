@@ -30,7 +30,12 @@ const AppBar = () => {
     await apolloClient.resetStore();
     navigate('/');
   };
-// console.log(data);
+
+  const createReview = () => {
+    console.log('create review');
+    navigate('/createreview');
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView horizontal>
@@ -40,9 +45,16 @@ const AppBar = () => {
           </Link>
         </Pressable>
         {data?.me ? (
-          <Pressable onPress={signOut}>
-            <Text style={styles.tab} color="textWhite" fontSize="subheading" fontWeight="bold">Sign out</Text>
-          </Pressable>
+          <>
+            <Pressable>
+              <Link to="/createreview" role="link">
+                <Text style={styles.tab} color="textWhite" fontSize="subheading" fontWeight="bold">Create a review</Text>
+              </Link>
+            </Pressable>
+            <Pressable onPress={signOut}>
+              <Text style={styles.tab} color="textWhite" fontSize="subheading" fontWeight="bold">Sign out</Text>
+            </Pressable>
+          </>
         ) : (
           <Pressable>
             <Link to="/signin" role="link">

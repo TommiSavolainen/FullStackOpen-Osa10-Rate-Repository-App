@@ -25,3 +25,39 @@ export const GET_REPOSITORY = gql`
         }
     }
 `;
+
+export const GET_REVIEWS = gql`
+    query Repository($id: ID!, $first: Int, $after: String) {
+        repository(id: $id) {
+            id
+            fullName
+            reviews(first: $first, after: $after) {
+                edges {
+                    node {
+                        id
+                        text
+                        rating
+                        createdAt
+                        user {
+                            id
+                            username
+                        }
+                    }
+                }
+            }
+        }
+    }
+`;
+
+export const CREATE_REVIEW = gql`
+    mutation CreateReview($review: CreateReviewInput) {
+        createReview(review: $review) {
+            id
+            repositoryId
+            userId
+            rating
+            createdAt
+            text
+        }
+    }
+`;
