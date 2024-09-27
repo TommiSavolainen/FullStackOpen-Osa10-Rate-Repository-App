@@ -1,6 +1,6 @@
 import Constants from 'expo-constants';
 import RepositoryList from './RepositoryList';
-import { Text, StyleSheet, View, Pressable } from 'react-native';
+import { Text, StyleSheet, View, Pressable, ScrollView } from 'react-native';
 import { Route, Routes, Navigate } from 'react-router-native';
 import SignIn from './SignIn';
 import AppBar from './AppBar';
@@ -22,13 +22,15 @@ const Main = () => {
       <Pressable onPress={() => console.log('AppBar pressed')}>
       <AppBar />
       </Pressable>
-      <Routes>
-        <Route path="/" element={<RepositoryList />} />
-        <Route path="/signin" element={<SignIn />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-        <Route path="/repository/:id" element={<SingleRepositoryView />} />
-        <Route path="/createreview" element={<CreateReview />} />
-      </Routes>
+      <ScrollView>
+        <Routes>
+          <Route path="/" element={<RepositoryList />} />
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/repository/:id" element={<SingleRepositoryView />} />
+          <Route path="/createreview" element={<CreateReview />} />
+        </Routes>
+      </ScrollView>
     </View>
   );
 };
