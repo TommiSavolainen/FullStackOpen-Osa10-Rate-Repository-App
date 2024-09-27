@@ -4,36 +4,35 @@ import { useNavigate } from 'react-router-native';
 import { CREATE_REVIEW } from '../graphql/queries';
 import ReviewForm from './ReviewForm';
 
-
 const CreateReview = () => {
     const [createReview] = useMutation(CREATE_REVIEW);
     const navigate = useNavigate();
     
     const onSubmit = async (values) => {
-        const { ownerName, repositoryName, rating, review } = values;
+        const { ownerName, repositoryName, rating, text } = values;
         const parsedRating = parseInt(rating);
     
         try {
-        const { data } = await createReview({
-            variables: {
-            review: {
-                ownerName,
-                repositoryName,
-                rating: parsedRating,
-                text: review,
-            },
-            },
-        });
+            const { data } = await createReview({
+                variables: {
+                    review: {
+                        ownerName,
+                        repositoryName,
+                        rating: parsedRating,
+                        text,
+                    },
+                },
+            });
     
-        if (data) {
-            navigate(`/repository/${data.createReview.repositoryId}`);
-        }
+            if (data) {
+                navigate(`/repository/${data.createReview.repositoryId}`);
+            }
         } catch (e) {
-        console.error(e);
+            console.error(e);
         }
     };
     
     return <ReviewForm onSubmit={onSubmit} />;
-    };
+};
 
 export default CreateReview;
