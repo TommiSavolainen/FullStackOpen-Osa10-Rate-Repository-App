@@ -29,11 +29,14 @@ const ItemSeparator = () => <View style={styles.separator} />;
 
 const SingleRepositoryView = () => {
     const { id } = useParams();
+    console.log(id);
     const { data, loading, error } = useQuery(GET_REPOSITORY, {
+        fetchPolicy: 'cache-and-network',
         variables: { id },
     });
+    console.log(data);
     const { data: reviewData, loading: reviewLoading, error: reviewError } = useQuery(GET_REVIEWS, {
-        variables: { id, first: 3 },
+        variables: { id, first: data?.repository.reviewCount},
     });
 
     if (loading) return <Text>Loading...</Text>;
@@ -43,7 +46,7 @@ const SingleRepositoryView = () => {
 
     const repository = data.repository;
     const reviews = reviewData.repository.reviews.edges.map(edge => edge.node);
-    
+    console.log(reviews);
     return (
         <View style={styles.container}>
             <FlatList
