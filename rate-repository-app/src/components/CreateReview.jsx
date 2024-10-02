@@ -2,12 +2,10 @@ import React from 'react';
 import { useMutation } from '@apollo/client';
 import { useNavigate } from 'react-router-native';
 import { CREATE_REVIEW } from '../graphql/queries';
-import { GET_REVIEWS } from '../graphql/queries'; // Import the query to refetch
 import ReviewForm from './ReviewForm';
 
 const CreateReview = () => {
   const [createReview] = useMutation(CREATE_REVIEW, {
-    refetchQueries: [{ query: GET_REVIEWS }], // Refetch the reviews query after mutation
   });
   const navigate = useNavigate();
 
