@@ -28,6 +28,7 @@ const CreateReview = () => {
       });
 
       if (data) {
+        console.log("navigate id "+data.createReview.repositoryId);
         navigate(`/repository/${data.createReview.repositoryId}`);
       }
     } catch (e) {

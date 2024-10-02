@@ -7,7 +7,7 @@ import RepositoryItem from './RepositoryItem';
 import { GET_REPOSITORY } from '../graphql/queries';
 import { GET_REVIEWS } from '../graphql/queries';
 import ReviewItem from './ReviewItem';
-import * as Linking from 'expo-linking';
+// import * as Linking from 'expo-linking';
 
 
 
@@ -29,12 +29,11 @@ const ItemSeparator = () => <View style={styles.separator} />;
 
 const SingleRepositoryView = () => {
     const { id } = useParams();
-    console.log(id);
     const { data, loading, error } = useQuery(GET_REPOSITORY, {
         fetchPolicy: 'cache-and-network',
         variables: { id },
     });
-    console.log(data);
+    console.log(id);
     const { data: reviewData, loading: reviewLoading, error: reviewError } = useQuery(GET_REVIEWS, {
         variables: { id, first: data?.repository.reviewCount},
     });
