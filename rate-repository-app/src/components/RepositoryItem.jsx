@@ -1,4 +1,4 @@
-// RepositoryItem.jsx
+import React from 'react';
 import { View, Image, StyleSheet, Button } from 'react-native';
 import Text from './Text';
 import * as Linking from 'expo-linking';
@@ -47,14 +47,17 @@ const styles = StyleSheet.create({
 });
 
 const formatNumber = (num) => {
+    if (num === undefined) {
+        return 'N/A';
+    }
     if (num >= 1000) {
         return (num / 1000).toFixed(1) + 'k';
     }
     return num.toString();
 };
 
-const RepositoryItem = ({ showGitHubButton, ...props }) => {
-    if (!props) {
+const RepositoryItem = ({ repository, showGitHubButton }) => {
+    if (!repository) {
         return null;
     }
     return (
@@ -62,37 +65,37 @@ const RepositoryItem = ({ showGitHubButton, ...props }) => {
             <View style={styles.header} role='none'>
                 <Image
                     style={styles.image}
-                    source={{ uri: props.ownerAvatarUrl }}
+                    source={{ uri: repository.ownerAvatarUrl }}
                     role="img"
                 />
                 <View style={styles.textContainer}>
-                    <Text fontWeight="bold">{props.fullName}</Text>
-                    <Text color="textSecondary">{props.description}</Text>
-                    <Text style={styles.language}>{props.language}</Text>
+                    <Text fontWeight="bold">{repository.fullName}</Text>
+                    <Text color="textSecondary">{repository.description}</Text>
+                    <Text style={styles.language}>{repository.language}</Text>
                 </View>
             </View>
             <View style={styles.statsContainer}>
                 <View style={styles.statItem}>
-                    <Text fontWeight="bold">{formatNumber(props.stargazersCount)}</Text>
+                    <Text fontWeight="bold">{formatNumber(repository.stargazersCount)}</Text>
                     <Text color="textSecondary">Stars</Text>
                 </View>
                 <View style={styles.statItem}>
-                    <Text fontWeight="bold">{formatNumber(props.forksCount)}</Text>
+                    <Text fontWeight="bold">{formatNumber(repository.forksCount)}</Text>
                     <Text color="textSecondary">Forks</Text>
                 </View>
                 <View style={styles.statItem}>
-                    <Text fontWeight="bold">{formatNumber(props.reviewCount)}</Text>
+                    <Text fontWeight="bold">{formatNumber(repository.reviewCount)}</Text>
                     <Text color="textSecondary">Reviews</Text>
                 </View>
                 <View style={styles.statItem}>
-                    <Text fontWeight="bold">{formatNumber(props.ratingAverage)}</Text>
+                    <Text fontWeight="bold">{formatNumber(repository.ratingAverage)}</Text>
                     <Text color="textSecondary">Rating</Text>
                 </View>
             </View>
             {showGitHubButton && (
                 <Button
                     title="Open in GitHub"
-                    onPress={() => Linking.openURL(props.url)}
+                    onPress={() => Linking.openURL(repository.url)}
                 />
             )}
         </View>
