@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import useRepositories from '../hooks/useRepositories';
-import { FlatList, View, Text } from 'react-native';
+import { FlatList, View, Text, Pressable } from 'react-native';
 import RepositoryItem from './RepositoryItem';
 import { useNavigate } from 'react-router-native';
-import { Pressable } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
 const ItemSeparator = () => <View style={{ height: 10 }} />;
+
 
 const RepositoryListHeader = ({ selectedOrder, setSelectedOrder }) => (
   <Picker
@@ -21,6 +21,7 @@ const RepositoryListHeader = ({ selectedOrder, setSelectedOrder }) => (
 
 const RepositoryList = () => {
   const [selectedOrder, setSelectedOrder] = useState('LATEST');
+  const navigate = useNavigate();
 
   const orderBy = selectedOrder === 'LATEST' ? 'CREATED_AT' : 'RATING_AVERAGE';
   const orderDirection = selectedOrder === 'LOWEST' ? 'ASC' : 'DESC';
@@ -31,12 +32,20 @@ const RepositoryList = () => {
   if (error) return <Text>Error: {error.message}</Text>;
 
   const repositoryNodes = repositories ? repositories.edges.map(edge => edge.node) : [];
-console.log(repositoryNodes);
+
+  const handlePress = (id) => {
+    navigate(`/repository/${id}`);
+  };
+
   return (
       <FlatList
           data={repositoryNodes}
           ItemSeparatorComponent={ItemSeparator}
-          renderItem={({ item }) => <RepositoryItem repository={item} />}
+          renderItem={({ item }) => (
+            <Pressable onPress={() => handlePress(item.id)}>
+              <RepositoryItem repository={item} />
+            </Pressable>
+          )}
           keyExtractor={({ id }) => id}
           ListHeaderComponent={() => (
               <RepositoryListHeader

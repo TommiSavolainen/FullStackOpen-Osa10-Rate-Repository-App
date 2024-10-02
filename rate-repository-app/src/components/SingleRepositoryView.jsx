@@ -9,8 +9,6 @@ import { GET_REVIEWS } from '../graphql/queries';
 import ReviewItem from './ReviewItem';
 // import * as Linking from 'expo-linking';
 
-
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -33,9 +31,9 @@ const SingleRepositoryView = () => {
         fetchPolicy: 'cache-and-network',
         variables: { id },
     });
-    console.log(id);
+
     const { data: reviewData, loading: reviewLoading, error: reviewError } = useQuery(GET_REVIEWS, {
-        variables: { id, first: data?.repository.reviewCount},
+        variables: { id, first: data?.repository.reviewCount },
     });
 
     if (loading) return <Text>Loading...</Text>;
@@ -45,7 +43,7 @@ const SingleRepositoryView = () => {
 
     const repository = data.repository;
     const reviews = reviewData.repository.reviews.edges.map(edge => edge.node);
-    console.log(reviews);
+
     return (
         <View style={styles.container}>
             <FlatList
@@ -53,7 +51,7 @@ const SingleRepositoryView = () => {
                 renderItem={({ item }) => <ReviewItem review={item} />}
                 keyExtractor={({ id }) => id}
                 ItemSeparatorComponent={ItemSeparator}
-                ListHeaderComponent={() => <RepositoryItem {...repository} showGitHubButton />}
+                ListHeaderComponent={() => <RepositoryItem repository={repository} showGitHubButton />}
             />
         </View>
     );

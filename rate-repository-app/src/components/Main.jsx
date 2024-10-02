@@ -23,16 +23,14 @@ const Main = () => {
       <Pressable onPress={() => console.log('AppBar pressed')}>
       <AppBar />
       </Pressable>
-      <ScrollView>
-        <Routes>
-          <Route path="/" element={<RepositoryList />} />
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="/repository/:id" element={<SingleRepositoryView />} />
-          <Route path="/createreview" element={<CreateReview />} />
-        </Routes>
-      </ScrollView>
+      <Routes>
+        <Route path="/" element={<RepositoryList />} />
+        <Route path="/signin" element={<ScrollView><SignIn /></ScrollView>} />
+        <Route path="/signup" element={<ScrollView><SignUp /></ScrollView>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="/repository/:id" element={<SingleRepositoryView />} />
+        <Route path="/createreview" element={<ScrollView><CreateReview /></ScrollView>} />
+      </Routes>
     </View>
   );
 };
