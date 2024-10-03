@@ -51,6 +51,11 @@ const AppBar = () => {
                 <Text style={styles.tab} color="textWhite" fontSize="subheading" fontWeight="bold">Create a review</Text>
               </Link>
             </Pressable>
+            <Pressable>
+              <Link to="/myreviews" role="link">
+                <Text style={styles.tab} color="textWhite" fontSize="subheading" fontWeight="bold">My reviews</Text>
+              </Link>
+            </Pressable>
             <Pressable onPress={signOut}>
               <Text style={styles.tab} color="textWhite" fontSize="subheading" fontWeight="bold">Sign out</Text>
             </Pressable>

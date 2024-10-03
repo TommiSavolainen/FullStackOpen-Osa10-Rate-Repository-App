@@ -1,21 +1,16 @@
-// SingleRepositoryView.jsx
-import React from 'react';
+import React, { useState } from 'react';
+import { FlatList, View, Text } from 'react-native';
 import { useParams } from 'react-router-native';
-import { useQuery } from '@apollo/client';
-import { View, Button, StyleSheet, Text, FlatList } from 'react-native';
+import useRepository from '../hooks/useRepository';
+import useReviews from '../hooks/useReviews';
 import RepositoryItem from './RepositoryItem';
-import { GET_REPOSITORY } from '../graphql/queries';
-import { GET_REVIEWS } from '../graphql/queries';
 import ReviewItem from './ReviewItem';
-// import * as Linking from 'expo-linking';
+import { StyleSheet } from 'react-native';
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-    },
-    button: {
-        margin: 10,
     },
     separator: {
         height: 10,
@@ -27,31 +22,34 @@ const ItemSeparator = () => <View style={styles.separator} />;
 
 const SingleRepositoryView = () => {
     const { id } = useParams();
-    const { data, loading, error } = useQuery(GET_REPOSITORY, {
-        fetchPolicy: 'cache-and-network',
-        variables: { id },
-    });
+    const { repository, loading: repoLoading, error: repoError } = useRepository(id);
+    const [first, setFirst] = useState(3);
+    const { reviews, fetchMore, loading: reviewsLoading, error: reviewsError } = useReviews(id, { first });
 
-    const { data: reviewData, loading: reviewLoading, error: reviewError } = useQuery(GET_REVIEWS, {
-        variables: { id, first: data?.repository.reviewCount },
-    });
+    if (repoLoading || reviewsLoading) return <Text>Loading...</Text>;
+    if (repoError || reviewsError) return <Text>Error: {repoError?.message || reviewsError?.message}</Text>;
 
-    if (loading) return <Text>Loading...</Text>;
-    if (error) return <Text>Error: {error.message}</Text>;
-    if (reviewLoading) return <Text>Loading reviews...</Text>;
-    if (reviewError) return <Text>Error: {reviewError.message}</Text>;
+    const reviewNodes = reviews ? reviews.edges.map(edge => edge.node) : [];
 
-    const repository = data.repository;
-    const reviews = reviewData.repository.reviews.edges.map(edge => edge.node);
+    const onEndReach = () => {
+        // console.log('End reached, fetching more reviews...');
+        fetchMore();
+    };
 
     return (
         <View style={styles.container}>
             <FlatList
-                data={reviews}
-                renderItem={({ item }) => <ReviewItem review={item} />}
-                keyExtractor={({ id }) => id}
+                data={reviewNodes}
                 ItemSeparatorComponent={ItemSeparator}
-                ListHeaderComponent={() => <RepositoryItem repository={repository} showGitHubButton />}
+                renderItem={({ item }) => (
+                    <ReviewItem review={item} />
+                )}
+                keyExtractor={({ id }) => id}
+                ListHeaderComponent={() => (
+                    <RepositoryItem repository={repository} />
+                )}
+                onEndReached={onEndReach}
+                onEndReachedThreshold={0.5}
             />
         </View>
     );

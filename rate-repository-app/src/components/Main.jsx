@@ -7,6 +7,7 @@ import AppBar from './AppBar';
 import SingleRepositoryView from './SingleRepositoryView';
 import CreateReview from './CreateReview';
 import SignUp from './SignUp';
+import MyReviews from './MyReviews';
 
 const styles = StyleSheet.create({
   container: {
@@ -30,6 +31,7 @@ const Main = () => {
         <Route path="*" element={<Navigate to="/" replace />} />
         <Route path="/repository/:id" element={<SingleRepositoryView />} />
         <Route path="/createreview" element={<ScrollView><CreateReview /></ScrollView>} />
+        <Route path="/myreviews" element={<MyReviews />} />
       </Routes>
     </View>
   );

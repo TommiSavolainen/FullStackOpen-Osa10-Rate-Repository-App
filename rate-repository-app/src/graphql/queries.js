@@ -1,10 +1,28 @@
 import { gql } from '@apollo/client';
 
 export const ME = gql`
-    query {
+    query me($includeReviews: Boolean = false) {
         me {
             id
             username
+            reviews @include(if: $includeReviews) {
+                edges {
+                    node {
+                        id
+                        text
+                        rating
+                        createdAt
+                        user {
+                            id
+                            username
+                        }
+                        repository {
+                            id
+                            fullName
+                        }
+                    }
+                }
+            }
         }
     }
 `;
@@ -27,8 +45,9 @@ export const GET_REPOSITORY = gql`
 `;
 
 export const GET_REPOSITORIES = gql`
-    query GetRepositories($orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirection, $searchKeyword: String) {
-        repositories(orderBy: $orderBy, orderDirection: $orderDirection, searchKeyword: $searchKeyword) {
+    query GetRepositories($first: Int, $after: String, $orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirection, $searchKeyword: String) {
+        repositories(first: $first, after: $after, orderBy: $orderBy, orderDirection: $orderDirection, searchKeyword: $searchKeyword) {
+            totalCount
             edges {
                 node {
                     id
@@ -40,14 +59,21 @@ export const GET_REPOSITORIES = gql`
                     ratingAverage
                     reviewCount
                     ownerAvatarUrl
+                    createdAt
                 }
+                cursor
+            }
+            pageInfo {
+                endCursor
+                startCursor
+                hasNextPage
             }
         }
     }
 `;
 
 export const GET_REVIEWS = gql`
-    query Repository($id: ID!, $first: Int, $after: String) {
+    query GetReviews($id: ID!, $first: Int, $after: String) {
         repository(id: $id) {
             id
             fullName
@@ -63,6 +89,10 @@ export const GET_REVIEWS = gql`
                             username
                         }
                     }
+                }
+                pageInfo {
+                    endCursor
+                    hasNextPage
                 }
             }
         }

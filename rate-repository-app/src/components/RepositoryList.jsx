@@ -53,6 +53,8 @@ class RepositoryListContainer extends React.Component {
         )}
         keyExtractor={({ id }) => id}
         ListHeaderComponent={this.renderHeader}
+        onEndReached={this.props.onEndReach}
+        onEndReachedThreshold={0.5}
       />
     );
   }
@@ -67,7 +69,12 @@ const RepositoryList = () => {
   const orderBy = selectedOrder === 'LATEST' ? 'CREATED_AT' : 'RATING_AVERAGE';
   const orderDirection = selectedOrder === 'LOWEST' ? 'ASC' : 'DESC';
 
-  const { repositories, loading, error } = useRepositories(orderBy, orderDirection, debouncedSearchKeyword);
+  const { repositories, fetchMore, loading, error } = useRepositories({
+    first: 3,
+    orderBy,
+    orderDirection,
+    searchKeyword: debouncedSearchKeyword,
+  });
 
   if (loading) return <Text>Loading...</Text>;
   if (error) return <Text>Error: {error.message}</Text>;
@@ -78,6 +85,10 @@ const RepositoryList = () => {
     navigate(`/repository/${id}`);
   };
 
+  const onEndReach = () => {
+    fetchMore();
+  };
+
   return (
     <RepositoryListContainer
       selectedOrder={selectedOrder}
@@ -86,6 +97,7 @@ const RepositoryList = () => {
       setSearchKeyword={setSearchKeyword}
       repositoryNodes={repositoryNodes}
       handlePress={handlePress}
+      onEndReach={onEndReach}
     />
   );
 };
